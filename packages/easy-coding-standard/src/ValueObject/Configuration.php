@@ -10,6 +10,7 @@ final class Configuration
 {
     /**
      * @param string[] $sources
+     * @param string[] $reportWarnings
      */
     public function __construct(
         private bool $isFixer = false,
@@ -21,6 +22,7 @@ final class Configuration
         private bool $doesMatchGitDiff = false,
         private bool $isParallel = false,
         private ?string $config = null,
+        private array $reportWarnings = [],
     ) {
     }
 
@@ -70,5 +72,13 @@ final class Configuration
     public function getConfig(): ?string
     {
         return $this->config;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getReportWarnings(): array
+    {
+        return $this->reportWarnings;
     }
 }

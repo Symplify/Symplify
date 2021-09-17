@@ -124,4 +124,9 @@ final class Option
      * @var string
      */
     public const PARALLEL_JOB_SIZE = 'parallel_job_size';
+
+    /**
+     * @var string
+     */
+    public const REPORT_WARNINGS = 'report-warnings';
 }

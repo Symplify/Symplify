@@ -7,6 +7,8 @@ namespace Symplify\EasyCodingStandard\Tests\DependencyInjection;
 use Symplify\EasyCodingStandard\FixerRunner\Application\FixerFileProcessor;
 use Symplify\EasyCodingStandard\HttpKernel\EasyCodingStandardKernel;
 use Symplify\EasyCodingStandard\SniffRunner\Application\SniffFileProcessor;
+use Symplify\EasyCodingStandard\ValueObject\Configuration;
+use Symplify\EasyCodingStandard\ValueObject\Option;
 use Symplify\PackageBuilder\Testing\AbstractKernelTestCase;
 
 final class ConfigurationFileTest extends AbstractKernelTestCase
@@ -37,5 +39,18 @@ final class ConfigurationFileTest extends AbstractKernelTestCase
 
         $sniffFileProcessor = $this->getService(SniffFileProcessor::class);
         $this->assertCount(1, $sniffFileProcessor->getCheckers());
+    }
+
+    public function testHasConfiguredReportWarnings(): void
+    {
+        $reportWarningsOnConfig = ['\NonExistentSniffClass'];
+        $kernel = $this->bootKernelWithConfigs(
+            EasyCodingStandardKernel::class,
+            [__DIR__ . '/ConfigurationFileSource/append-report-warnings-config.php']
+        );
+        $container = $kernel->getContainer();
+
+        $reportWarnings = $container->getParameter(Option::REPORT_WARNINGS);
+        $this->assertSame($reportWarningsOnConfig, $reportWarnings);
     }
 }
