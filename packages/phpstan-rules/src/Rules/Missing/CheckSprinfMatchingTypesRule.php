@@ -7,6 +7,7 @@ namespace Symplify\PHPStanRules\Rules\Missing;
 use Nette\Utils\Arrays;
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\Constant\ConstantStringType;
@@ -61,7 +62,12 @@ final class CheckSprinfMatchingTypesRule extends AbstractSymplifyRule
             return [];
         }
 
-        $formatArgType = $scope->getType($node->args[0]->value);
+        $argOrVariadicPlaceholder = $node->args[0];
+        if (! $argOrVariadicPlaceholder instanceof Arg) {
+            return [];
+        }
+
+        $formatArgType = $scope->getType($argOrVariadicPlaceholder->value);
         if (! $formatArgType instanceof ConstantStringType) {
             return [];
         }

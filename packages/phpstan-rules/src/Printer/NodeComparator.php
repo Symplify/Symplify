@@ -27,7 +27,7 @@ final class NodeComparator
     }
 
     /**
-     * @param Arg[] $methodCallArgs
+     * @param array<Arg|Node\VariadicPlaceholder> $methodCallArgs
      * @param Param[] $classMethodParams
      */
     public function areArgsAndParamsSame(array $methodCallArgs, array $classMethodParams): bool

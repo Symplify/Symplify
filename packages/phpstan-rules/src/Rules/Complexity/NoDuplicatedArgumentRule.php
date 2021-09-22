@@ -83,7 +83,7 @@ CODE_SAMPLE
 
     private function shouldSkip(StaticCall|MethodCall|FuncCall $expr, Scope $scope): bool
     {
-        if (\count($expr->args) < 2) {
+        if (\count((array) $expr->args) < 2) {
             return true;
         }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symplify\PHPStanRules\Rules;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -46,12 +47,7 @@ final class RegexSuffixInRegexConstantRule extends AbstractSymplifyRule
     public function process(Node $node, Scope $scope): array
     {
         if ($node instanceof FuncCall) {
-            if (! $this->regexFuncCallAnalyzer->isRegexFuncCall($node)) {
-                return [];
-            }
-
-            $firstArgValue = $node->args[0]->value;
-            return $this->processConstantName($firstArgValue);
+            return $this->processFuncCall($node);
         }
 
         return $this->processStaticCall($node);
@@ -119,7 +115,29 @@ CODE_SAMPLE
             return [];
         }
 
-        $secondArgValue = $staticCall->args[1]->value;
-        return $this->processConstantName($secondArgValue);
+        $argOrVariadicPlaceholder = $staticCall->args[1];
+        if (! $argOrVariadicPlaceholder instanceof Arg) {
+            return [];
+        }
+
+        return $this->processConstantName($argOrVariadicPlaceholder->value);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function processFuncCall(FuncCall $funcCall): array
+    {
+        if (! $this->regexFuncCallAnalyzer->isRegexFuncCall($funcCall)) {
+            return [];
+        }
+
+        $argOrVariadicPlaceholder = $funcCall->args[0];
+        if (! $argOrVariadicPlaceholder instanceof Arg) {
+            return [];
+        }
+
+        $firstArgValue = $argOrVariadicPlaceholder->value;
+        return $this->processConstantName($firstArgValue);
     }
 }

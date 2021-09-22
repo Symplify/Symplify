@@ -5,7 +5,7 @@
     "license": "MIT",
     "require": {
         "php": ">=8.0",
-        "nikic/php-parser": "^4.11",
+        "nikic/php-parser": "^4.13",
         "latte/latte": "^2.10",
         "twig/twig": "^3.3",
         "nette/utils": "^3.2",

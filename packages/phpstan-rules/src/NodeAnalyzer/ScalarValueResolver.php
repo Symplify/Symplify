@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symplify\PHPStanRules\NodeAnalyzer;
 
 use PhpParser\Node\Arg;
+use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Analyser\Scope;
 use Symplify\Astral\NodeValue\NodeValueResolver;
 
@@ -16,7 +17,7 @@ final class ScalarValueResolver
     }
 
     /**
-     * @param Arg[] $args
+     * @param array<Arg|VariadicPlaceholder> $args
      * @return mixed[]
      */
     public function resolveValuesCountFromArgs(array $args, Scope $scope): array
@@ -33,13 +34,17 @@ final class ScalarValueResolver
     }
 
     /**
-     * @param Arg[] $args
+     * @param array<Arg|VariadicPlaceholder> $args
      * @return mixed[]
      */
     private function resolvedValues(array $args, string $filePath): array
     {
         $passedValues = [];
         foreach ($args as $arg) {
+            if (! $arg instanceof Arg) {
+                continue;
+            }
+
             $resolvedValue = $this->nodeValueResolver->resolve($arg->value, $filePath);
 
             // skip simple values

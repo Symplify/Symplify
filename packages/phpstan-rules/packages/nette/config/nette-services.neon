@@ -2,6 +2,9 @@ includes:
     - ../../../packages/latte-phpstan-printer/config/latte-phpstan-printer-services.neon
 
 services:
+    - Symplify\PHPStanRules\Nette\FileSystem\PHPLatteFileDumper
+    - Symplify\PHPStanRules\Nette\PHPStan\LattePHPStanRulesRegistryAndIgnoredErrorsFilter
+
     # php-parser
     - Symplify\PHPStanRules\Nette\PhpParser\ParentNodeAwarePhpParser
     - Symplify\PHPStanRules\Nette\PhpParser\NodeVisitor\ParentLayoutNameNodeVisitor

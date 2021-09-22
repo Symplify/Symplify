@@ -26,7 +26,10 @@ use Symplify\SymfonyPhpConfig\ValueObjectInliner;
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->import(SetList::CODE_QUALITY);
     $containerConfigurator->import(SetList::CODE_QUALITY_STRICT);
-    $containerConfigurator->import(SetList::DEAD_CODE);
+
+    // uncomment after phpstan is using php-parser 4.13, to avoid false positives
+    // $containerConfigurator->import(SetList::DEAD_CODE);
+
     $containerConfigurator->import(SetList::CODING_STYLE);
     $containerConfigurator->import(SetList::PHP_54);
     $containerConfigurator->import(SetList::PHP_55);

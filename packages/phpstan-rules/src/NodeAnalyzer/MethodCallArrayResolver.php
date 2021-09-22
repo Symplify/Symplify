@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symplify\PHPStanRules\NodeAnalyzer;
 
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
@@ -24,7 +25,12 @@ final class MethodCallArrayResolver
             return [];
         }
 
-        $secondArgValue = $methodCall->args[$position]->value;
+        $argOrVariadicPlaceholder = $methodCall->args[$position];
+        if (! $argOrVariadicPlaceholder instanceof Arg) {
+            return [];
+        }
+
+        $secondArgValue = $argOrVariadicPlaceholder->value;
         if (! $secondArgValue instanceof Array_) {
             return [];
         }

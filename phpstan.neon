@@ -524,8 +524,8 @@ parameters:
 
         # confusing generics
         - '#Method Symplify\\PHPStanRules\\Nette\\Rules\\LatteCompleteCheckRule\:\:__construct\(\) has parameter \$rules with generic interface PHPStan\\Rules\\Rule but does not specify its types\: TNodeType#'
-        - '#Method Symplify\\PHPStanRules\\Nette\\Rules\\LatteCompleteCheckRule\:\:filterActiveRules\(\) return type with generic interface PHPStan\\Rules\\Rule does not specify its types\: TNodeType#'
-        - '#Method Symplify\\PHPStanRules\\Nette\\Rules\\LatteCompleteCheckRule\:\:filterActiveRules\(\) has parameter \$rules with generic interface PHPStan\\Rules\\Rule but does not specify its types\: TNodeType#'
+        - '#Method Symplify\\PHPStanRules\\Nette\\PHPStan\\LattePHPStanRulesRegistryAndIgnoredErrorsFilter\:\:filterActiveRules\(\) return type with generic interface PHPStan\\Rules\\Rule does not specify its types\: TNodeType#'
+        - '#Method Symplify\\PHPStanRules\\Nette\\PHPStan\\LattePHPStanRulesRegistryAndIgnoredErrorsFilter\:\:filterActiveRules\(\) has parameter \$rules with generic interface PHPStan\\Rules\\Rule but does not specify its types\: TNodeType#'
 
         # docs lines
         -

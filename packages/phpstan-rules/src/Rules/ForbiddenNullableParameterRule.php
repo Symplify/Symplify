@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symplify\PHPStanRules\Rules;
 
 use PhpParser\Node;
+use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Identifier;
@@ -14,7 +15,6 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\UnionType;
 use PHPStan\Analyser\Scope;
 use Symplify\Astral\Naming\SimpleNameResolver;
 use Symplify\PHPStanRules\ParentGuard\ParentClassMethodGuard;
@@ -140,7 +140,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return Identifier|Name|NullableType|UnionType
+     * @return Identifier|Name|ComplexType
      */
     private function matchNullableParamType(Param $param): ?Node
     {

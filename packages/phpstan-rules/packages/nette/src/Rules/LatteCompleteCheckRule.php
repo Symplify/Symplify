@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symplify\PHPStanRules\Nette\Rules;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Error;
@@ -15,16 +16,14 @@ use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleError;
 use PHPStan\Rules\RuleErrorBuilder;
 use Symplify\PHPStanRules\LattePHPStanPrinter\ValueObject\PhpFileContentsWithLineMap;
+use Symplify\PHPStanRules\Nette\FileSystem\PHPLatteFileDumper;
 use Symplify\PHPStanRules\Nette\NodeAnalyzer\TemplateRenderAnalyzer;
+use Symplify\PHPStanRules\Nette\PHPStan\LattePHPStanRulesRegistryAndIgnoredErrorsFilter;
 use Symplify\PHPStanRules\Nette\TemplateFileVarTypeDocBlocksDecorator;
 use Symplify\PHPStanRules\NodeAnalyzer\PathResolver;
 use Symplify\PHPStanRules\Rules\AbstractSymplifyRule;
-use Symplify\PHPStanRules\Rules\ForbiddenFuncCallRule;
-use Symplify\PHPStanRules\Rules\NoDynamicNameRule;
-use Symplify\RuleDocGenerator\Contract\DocumentedRuleInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use Symplify\SmartFileSystem\SmartFileSystem;
 use Throwable;
 
 /**
@@ -39,25 +38,6 @@ final class LatteCompleteCheckRule extends AbstractSymplifyRule
      */
     public const ERROR_MESSAGE = 'Complete analysis of PHP code generated from Latte template';
 
-    /**
-     * @var string[]
-     */
-    private const IGNORED_ERROR_MESSAGES = [
-        'DummyTemplateClass',
-        'Method Nette\Application\UI\Renderable::redrawControl() invoked with',
-        'Ternary operator condition is always true',
-        'Access to an undefined property Latte\Runtime\FilterExecutor::',
-        'Anonymous function should have native return typehint "void"',
-        // impossible to resolve with conditions in PHP
-        '#might not be defined#',
-        '#has an unused variable#',
-    ];
-
-    /**
-     * @var array<class-string<DocumentedRuleInterface>>
-     */
-    private const EXCLUDED_RULES = [ForbiddenFuncCallRule::class, NoDynamicNameRule::class];
-
     private Registry $registry;
 
     /**
@@ -68,12 +48,13 @@ final class LatteCompleteCheckRule extends AbstractSymplifyRule
         private FileAnalyser $fileAnalyser,
         private TemplateRenderAnalyzer $templateRenderAnalyzer,
         private PathResolver $pathResolver,
-        private SmartFileSystem $smartFileSystem,
         private TemplateFileVarTypeDocBlocksDecorator $templateFileVarTypeDocBlocksDecorator,
+        private PHPLatteFileDumper $phpLatteFileDumper,
+        private LattePHPStanRulesRegistryAndIgnoredErrorsFilter $lattePHPStanRulesRegistryAndIgnoredErrorsFilter
     ) {
         // limit rule here, as template class can contain lot of allowed Latte magic
         // get missing method + missing property etc. rule
-        $activeRules = $this->filterActiveRules($rules);
+        $activeRules = $this->lattePHPStanRulesRegistryAndIgnoredErrorsFilter->filterActiveRules($rules);
 
         // HACK for prevent circular reference...
         $this->registry = new Registry($activeRules);
@@ -102,14 +83,24 @@ final class LatteCompleteCheckRule extends AbstractSymplifyRule
             return [];
         }
 
-        $firstArgValue = $node->args[0]->value;
+        $firstArg = $node->args[0];
+        if (! $firstArg instanceof Arg) {
+            return [];
+        }
+
+        $firstArgValue = $firstArg->value;
 
         $resolvedTemplateFilePath = $this->pathResolver->resolveExistingFilePath($firstArgValue, $scope);
         if ($resolvedTemplateFilePath === null) {
             return [];
         }
 
-        $secondArgValue = $node->args[1]->value;
+        $secondArgOrVariadicPlaceholder = $node->args[1];
+        if (! $secondArgOrVariadicPlaceholder instanceof Arg) {
+            return [];
+        }
+
+        $secondArgValue = $secondArgOrVariadicPlaceholder->value;
         if (! $secondArgValue instanceof Array_) {
             return [];
         }
@@ -125,16 +116,15 @@ final class LatteCompleteCheckRule extends AbstractSymplifyRule
             return [];
         }
 
-        $tmpFilePath = sys_get_temp_dir() . '/' . md5($scope->getFile()) . '-latte-compiled.php';
-        $phpFileContents = $phpFileContentsWithLineMap->getPhpFileContents();
-
-        $this->smartFileSystem->dumpFile($tmpFilePath, $phpFileContents);
+        $dumperPhpFilePath = $this->phpLatteFileDumper->dump($phpFileContentsWithLineMap, $scope);
 
         // to include generated class
-        $fileAnalyserResult = $this->fileAnalyser->analyseFile($tmpFilePath, [], $this->registry, null);
+        $fileAnalyserResult = $this->fileAnalyser->analyseFile($dumperPhpFilePath, [], $this->registry, null);
 
         // remove errors related to just created class, that cannot be autoloaded
-        $errors = array_filter($fileAnalyserResult->getErrors(), fn (Error $error): bool => $this->shouldKeep($error));
+        $errors = $this->lattePHPStanRulesRegistryAndIgnoredErrorsFilter->filterErrors(
+            $fileAnalyserResult->getErrors()
+        );
 
         return $this->createErrors($errors, $resolvedTemplateFilePath, $phpFileContentsWithLineMap);
     }
@@ -205,36 +195,5 @@ CODE_SAMPLE
         }
 
         return $ruleErrors;
-    }
-
-    /**
-     * @param Rule[] $rules
-     * @return Rule[]
-     */
-    private function filterActiveRules(array $rules): array
-    {
-        $activeRules = [];
-
-        foreach ($rules as $rule) {
-            foreach (self::EXCLUDED_RULES as $excludedRule) {
-                if (is_a($rule, $excludedRule, true)) {
-                    continue 2;
-                }
-            }
-
-            $activeRules[] = $rule;
-        }
-        return $activeRules;
-    }
-
-    private function shouldKeep(Error $error): bool
-    {
-        foreach (self::IGNORED_ERROR_MESSAGES as $ignoredErrorMessage) {
-            if (str_contains($error->getMessage(), $ignoredErrorMessage)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

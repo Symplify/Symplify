@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symplify\PHPStanRules\Rules;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
@@ -58,6 +59,10 @@ final class ForbiddenSpreadOperatorRule extends AbstractSymplifyRule
         }
 
         foreach ($node->args as $key => $arg) {
+            if (! $arg instanceof Arg) {
+                continue;
+            }
+
             if (! $arg->unpack) {
                 continue;
             }

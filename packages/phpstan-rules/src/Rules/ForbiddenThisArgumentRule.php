@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symplify\PHPStanRules\Rules;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -67,6 +68,10 @@ final class ForbiddenThisArgumentRule extends AbstractSymplifyRule
         }
 
         foreach ($node->args as $arg) {
+            if (! $arg instanceof Arg) {
+                continue;
+            }
+
             $argType = $scope->getType($arg->value);
             if (! $argType instanceof ThisType) {
                 continue;

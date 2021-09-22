@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symplify\PHPStanRules\TypeResolver;
 
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -22,6 +23,10 @@ final class ArgTypeResolver
 
         $argTypes = [];
         foreach ($args as $arg) {
+            if (! $arg instanceof Arg) {
+                continue;
+            }
+
             $argTypes[] = $scope->getType($arg->value);
         }
 

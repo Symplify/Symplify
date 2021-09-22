@@ -12,7 +12,7 @@
         "symfony/console": "^5.3|^6.0",
         "symfony/http-kernel": "^5.3|^6.0",
         "nette/utils": "^3.2",
-        "nikic/php-parser": "^4.11",
+        "nikic/php-parser": "^4.13",
         "symplify/composer-json-manipulator": "^9.5",
         "symplify/package-builder": "^9.5",
         "symplify/symplify-kernel": "^9.5",

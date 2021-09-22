@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symplify\PHPStanRules\Rules;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
@@ -61,7 +62,12 @@ final class ForbiddenComplexFuncCallRule extends AbstractSymplifyRule implements
             return [];
         }
 
-        $secondArgValue = $node->args[1]->value;
+        $firstArgOrVariadicPlaceholder = $node->args[1];
+        if (! $firstArgOrVariadicPlaceholder instanceof Arg) {
+            return [];
+        }
+
+        $secondArgValue = $firstArgOrVariadicPlaceholder->value;
         if (! $secondArgValue instanceof Closure) {
             return [];
         }

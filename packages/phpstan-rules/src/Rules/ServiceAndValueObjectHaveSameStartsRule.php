@@ -6,6 +6,7 @@ namespace Symplify\PHPStanRules\Rules;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
@@ -124,7 +125,12 @@ CODE_SAMPLE
 
     private function resolveSetMethodCallShortClass(MethodCall $methodCall): ?string
     {
-        $setFirstArgValue = $methodCall->args[0]->value;
+        $firstArgOrVariablePlaceholder = $methodCall->args[0];
+        if (! $firstArgOrVariablePlaceholder instanceof Arg) {
+            return null;
+        }
+
+        $setFirstArgValue = $firstArgOrVariablePlaceholder->value;
         if (! $setFirstArgValue instanceof ClassConstFetch) {
             return null;
         }

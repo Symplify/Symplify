@@ -156,6 +156,10 @@ CODE_SAMPLE
             }
 
             foreach ($methodCall->args as $key => $arg) {
+                if (! $arg instanceof Arg) {
+                    continue;
+                }
+
                 if ($this->shouldSkipArg($key, $positions, $arg, $isLocalConstant)) {
                     continue;
                 }

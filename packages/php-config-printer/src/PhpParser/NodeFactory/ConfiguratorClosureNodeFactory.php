@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symplify\PhpConfigPrinter\PhpParser\NodeFactory;
 
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -13,15 +14,22 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\Astral\Exception\ShouldNotHappenException;
+use Symplify\Astral\Naming\SimpleNameResolver;
+use Symplify\Astral\NodeValue\NodeValueResolver;
 use Symplify\PhpConfigPrinter\ValueObject\VariableName;
 
 final class ConfiguratorClosureNodeFactory
 {
+    public function __construct(
+        private SimpleNameResolver $simpleNameResolver,
+        private NodeValueResolver $nodeValueResolver,
+    ) {
+    }
+
     /**
      * @param Stmt[] $stmts
      */
@@ -91,26 +99,23 @@ final class ConfiguratorClosureNodeFactory
             }
 
             $stmt = $stmt->expr;
+
             if (! $stmt instanceof MethodCall) {
                 continue;
             }
 
-            if ($stmt->name instanceof Expr) {
+            $extensionName = $this->matchExtensionName($stmt);
+            if (! is_string($extensionName)) {
                 continue;
             }
 
-            if ((string) $stmt->name !== 'extension') {
+            $secondArgOrVariadicPlaceholder = $stmt->args[1];
+            if (! $secondArgOrVariadicPlaceholder instanceof Arg) {
                 continue;
             }
 
-            $firstArgValue = $stmt->args[0]->value;
-            if (! $firstArgValue instanceof String_) {
-                continue;
-            }
-
-            $extensionName = $firstArgValue->value;
             $extensionNodes[$extensionName][] = [
-                $stmtKey => $stmt->args[1]->value,
+                $stmtKey => $secondArgOrVariadicPlaceholder->value,
             ];
         }
 
@@ -152,7 +157,8 @@ final class ConfiguratorClosureNodeFactory
                 continue;
             }
 
-            $methodCall->args[1]->value = new Array_($newArrayItems);
+            $array = new Array_($newArrayItems);
+            $methodCall->args[1] = new Arg($array);
         }
 
         return $stmts;
@@ -211,5 +217,24 @@ final class ConfiguratorClosureNodeFactory
         }
 
         return $stmtKeysToRemove;
+    }
+
+    private function matchExtensionName(MethodCall $methodCall): ?string
+    {
+        if (! $this->simpleNameResolver->isName($methodCall->name, 'extension')) {
+            return null;
+        }
+
+        $firstArg = $methodCall->args[0];
+        if (! $firstArg instanceof Arg) {
+            return null;
+        }
+
+        $extensionName = $this->nodeValueResolver->resolve($firstArg->value, '');
+        if (! is_string($extensionName)) {
+            return null;
+        }
+
+        return $extensionName;
     }
 }

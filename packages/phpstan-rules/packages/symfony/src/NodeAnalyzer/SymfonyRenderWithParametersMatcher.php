@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symplify\PHPStanRules\Symfony\NodeAnalyzer;
 
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
@@ -44,7 +45,7 @@ final class SymfonyRenderWithParametersMatcher
             return null;
         }
 
-        return $this->matchRenderTempalteWithParmatersOnArgs($methodCall, $scope);
+        return $this->matchRenderTemplateWithParmatersOnArgs($methodCall, $scope);
     }
 
     public function matchTwigRender(MethodCall $methodCall, Scope $scope): RenderTemplateWithParameters|null
@@ -62,7 +63,7 @@ final class SymfonyRenderWithParametersMatcher
             return null;
         }
 
-        return $this->matchRenderTempalteWithParmatersOnArgs($methodCall, $scope);
+        return $this->matchRenderTemplateWithParmatersOnArgs($methodCall, $scope);
     }
 
     private function resolveParameterArray(MethodCall $methodCall): Array_
@@ -71,7 +72,12 @@ final class SymfonyRenderWithParametersMatcher
             return new Array_();
         }
 
-        $secondArgValue = $methodCall->args[1]->value;
+        $secondArgOrVariadicPlaceholder = $methodCall->args[1];
+        if (! $secondArgOrVariadicPlaceholder instanceof Arg) {
+            return new Array_();
+        }
+
+        $secondArgValue = $secondArgOrVariadicPlaceholder->value;
         if (! $secondArgValue instanceof Array_) {
             return new Array_();
         }
@@ -92,13 +98,16 @@ final class SymfonyRenderWithParametersMatcher
         return false;
     }
 
-    private function matchRenderTempalteWithParmatersOnArgs(
+    private function matchRenderTemplateWithParmatersOnArgs(
         MethodCall $methodCall,
         Scope $scope
     ): ?RenderTemplateWithParameters {
-        $firstArgValue = $methodCall->args[0]->value;
+        $firstArg = $methodCall->args[0];
+        if (! $firstArg instanceof Arg) {
+            return null;
+        }
 
-        $resolvedTemplateFilePath = $this->pathResolver->resolveExistingFilePath($firstArgValue, $scope);
+        $resolvedTemplateFilePath = $this->pathResolver->resolveExistingFilePath($firstArg->value, $scope);
         if ($resolvedTemplateFilePath === null) {
             return null;
         }

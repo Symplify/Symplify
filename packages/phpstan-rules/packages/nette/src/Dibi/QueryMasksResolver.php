@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symplify\PHPStanRules\Nette\Dibi;
 
 use Nette\Utils\Strings;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
@@ -32,6 +33,9 @@ final class QueryMasksResolver
     public function resolveQueryMasks(MethodCall $methodCall, Scope $scope): array
     {
         $firstArg = $methodCall->args[0];
+        if (! $firstArg instanceof Arg) {
+            return [];
+        }
 
         $queryString = $this->nodeValueResolver->resolve($firstArg->value, $scope->getFile());
         if (! is_string($queryString)) {

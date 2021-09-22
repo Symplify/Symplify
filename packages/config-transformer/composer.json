@@ -10,7 +10,7 @@
         "ext-dom": "*",
         "nette/neon": "^3.2",
         "nette/utils": "^3.2",
-        "nikic/php-parser": "^4.11",
+        "nikic/php-parser": "^4.13",
         "symfony/console": "^5.3|^6.0",
         "symfony/dependency-injection": "^5.3|^6.0",
         "symfony/expression-language": "^5.3|^6.0",
