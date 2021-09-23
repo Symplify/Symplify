@@ -23,12 +23,8 @@ final class PathResolver
     {
         $resolvedValue = $this->nodeValueResolver->resolveWithScope($expr, $scope);
 
-        if (is_string($resolvedValue)) {
-            $possibleTemplateFilePaths = [$resolvedValue];
-        } elseif (is_array($resolvedValue)) {
-            $possibleTemplateFilePaths = $resolvedValue;
-        } else {
-            // impossible to resolve
+        $possibleTemplateFilePaths = $this->arrayizeStrings($resolvedValue);
+        if ($possibleTemplateFilePaths === []) {
             return [];
         }
 
@@ -57,7 +53,7 @@ final class PathResolver
                 continue;
             }
 
-            $resolvedTemplateFilePaths[] = $possibleTemplateFilePaths;
+            $resolvedTemplateFilePaths[] = $fileRealPath;
         }
 
         return $resolvedTemplateFilePaths;
@@ -85,5 +81,22 @@ final class PathResolver
         }
 
         return null;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function arrayizeStrings(mixed $resolvedValue): array
+    {
+        if (is_string($resolvedValue)) {
+            return [$resolvedValue];
+        }
+
+        if (is_array($resolvedValue)) {
+            return $resolvedValue;
+        }
+
+        // impossible to resolve
+        return [];
     }
 }

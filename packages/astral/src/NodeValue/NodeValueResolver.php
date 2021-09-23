@@ -37,12 +37,15 @@ final class NodeValueResolver
 
     private ?string $currentFilePath = null;
 
+    private UnionTypeValueResolver $unionTypeValueResolver;
+
     public function __construct(
         private SimpleNameResolver $simpleNameResolver,
         private TypeChecker $typeChecker,
         private SimpleNodeFinder $simpleNodeFinder
     ) {
         $this->constExprEvaluator = new ConstExprEvaluator(fn (Expr $expr) => $this->resolveByNode($expr));
+        $this->unionTypeValueResolver = new UnionTypeValueResolver();
     }
 
     /**
@@ -63,7 +66,7 @@ final class NodeValueResolver
         }
 
         if ($exprType instanceof UnionType) {
-            return $this->resolveConstantUnionType($exprType);
+            return $this->unionTypeValueResolver->resolveConstantTypes($exprType);
         }
 
         return null;
@@ -182,23 +185,5 @@ final class NodeValueResolver
         }
 
         return null;
-    }
-
-    /**
-     * @return mixed[]
-     */
-    private function resolveConstantUnionType(UnionType $unionType): array
-    {
-        $resolvedValues = [];
-
-        foreach ($unionType->getTypes() as $unionedType) {
-            if (! $unionedType instanceof ConstantScalarType) {
-                continue;
-            }
-
-            $resolvedValues[] = $unionedType->getValue();
-        }
-
-        return $resolvedValues;
     }
 }

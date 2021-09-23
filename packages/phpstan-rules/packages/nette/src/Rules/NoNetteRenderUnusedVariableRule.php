@@ -55,25 +55,37 @@ final class NoNetteRenderUnusedVariableRule extends AbstractSymplifyRule
 
         $firstArgValue = $node->args[0]->value;
 
-        $templateFilePath = $this->pathResolver->resolveExistingFilePaths($firstArgValue, $scope);
-        if ($templateFilePath === null) {
+        $templateFilePaths = $this->pathResolver->resolveExistingFilePaths($firstArgValue, $scope);
+        if ($templateFilePaths === []) {
             return [];
         }
 
-        $unusedVariableNames = $this->unusedNetteTemplateRenderVariableResolver->resolveMethodCallAndTemplate(
-            $node,
-            $templateFilePath,
-            $scope
-        );
+        $unusedVariableNamesByTemplateFilePath = [];
 
-        if ($unusedVariableNames === []) {
+        foreach ($templateFilePaths as $templateFilePath) {
+            $unusedVariableNamesByTemplateFilePath[$templateFilePath] = $this->unusedNetteTemplateRenderVariableResolver->resolveMethodCallAndTemplate(
+                $node,
+                $templateFilePath,
+                $scope
+            );
+        }
+
+        if ($unusedVariableNamesByTemplateFilePath === []) {
             return [];
         }
 
-        $unusedPassedVariablesString = implode('", "', $unusedVariableNames);
-        $errorMessage = sprintf(self::ERROR_MESSAGE, $unusedPassedVariablesString);
+        $errors = [];
 
-        return [$errorMessage];
+        foreach ($unusedVariableNamesByTemplateFilePath as $templateFilePath => $unusedVariableNames) {
+            if ($unusedVariableNames === []) {
+                continue;
+            }
+
+            $unusedPassedVariablesString = implode('", "', $unusedVariableNames);
+            $errors[] = sprintf(self::ERROR_MESSAGE, $unusedPassedVariablesString);
+        }
+
+        return $errors;
     }
 
     public function getRuleDefinition(): RuleDefinition

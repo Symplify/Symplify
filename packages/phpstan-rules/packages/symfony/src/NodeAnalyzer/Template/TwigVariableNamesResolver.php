@@ -46,7 +46,10 @@ final class TwigVariableNamesResolver
         $nodeTraverser->traverse($stmts);
     }
 
-    private function resolveFromFilePath($filePath): array
+    /**
+     * @return string[]
+     */
+    private function resolveFromFilePath(string $filePath): array
     {
         $phpFileContent = $this->twigToPhpCompiler->compileContent($filePath, []);
 

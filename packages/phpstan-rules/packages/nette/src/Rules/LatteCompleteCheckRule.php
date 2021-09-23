@@ -117,7 +117,13 @@ final class LatteCompleteCheckRule extends AbstractSymplifyRule
             return [];
         }
 
-        return $this->processTemplateFilePath($resolvedTemplateFilePaths, $secondArgValue, $scope);
+        $errors = [];
+        foreach ($resolvedTemplateFilePaths as $resolvedTemplateFilePath) {
+            $currentErrors = $this->processTemplateFilePath($resolvedTemplateFilePath, $secondArgValue, $scope);
+            $errors = array_merge($errors, $currentErrors);
+        }
+
+        return $errors;
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -182,16 +188,15 @@ CODE_SAMPLE
         return $activeRules;
     }
 
-    private function processTemplateFilePath(
-        array $resolvedTemplateFilePath,
-        Node\Expr|Array_ $secondArgValue,
-        Scope $scope
-    ): array
+    /**
+     * @return RuleError[]
+     */
+    private function processTemplateFilePath(string $templateFilePath, Array_ $array, Scope $scope): array
     {
         try {
             $phpFileContentsWithLineMap = $this->templateFileVarTypeDocBlocksDecorator->decorate(
-                $resolvedTemplateFilePath,
-                $secondArgValue,
+                $templateFilePath,
+                $array,
                 $scope
             );
         } catch (Throwable) {
@@ -210,10 +215,6 @@ CODE_SAMPLE
         // remove errors related to just created class, that cannot be autoloaded
         $errors = $this->errorSkipper->skipErrors($fileAnalyserResult->getErrors(), self::ERROR_IGNORES);
 
-        return $this->templateErrorsFactory->createErrors(
-            $errors,
-            $resolvedTemplateFilePath,
-            $phpFileContentsWithLineMap
-        );
+        return $this->templateErrorsFactory->createErrors($errors, $templateFilePath, $phpFileContentsWithLineMap);
     }
 }
