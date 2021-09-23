@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symplify\PhpConfigPrinter\RoutingCaseConverter;
 
+use locale;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
@@ -16,7 +17,7 @@ use Symplify\PhpConfigPrinter\ValueObject\VariableName;
 final class ImportRoutingCaseConverter implements RoutingCaseConverterInterface
 {
     /**
-     * @var string[]
+     * @var string[]|class-string<locale>[]
      */
     private const NESTED_KEYS = [
         'name_prefix',

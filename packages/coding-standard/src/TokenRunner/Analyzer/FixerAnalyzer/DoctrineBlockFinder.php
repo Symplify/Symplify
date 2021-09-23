@@ -108,6 +108,7 @@ final class DoctrineBlockFinder
                 continue;
             }
         }
+
         return $index;
     }
 

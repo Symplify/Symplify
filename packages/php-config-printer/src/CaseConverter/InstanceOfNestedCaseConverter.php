@@ -22,7 +22,7 @@ final class InstanceOfNestedCaseConverter
     ) {
     }
 
-    public function convertToMethodCall($key, $values): Expression
+    public function convertToMethodCall(string $key, array $values): Expression
     {
         $classConstFetch = $this->commonNodeFactory->createClassReference($key);
 

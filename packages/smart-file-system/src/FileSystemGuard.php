@@ -14,6 +14,7 @@ final class FileSystemGuard
         if (file_exists($file)) {
             return;
         }
+
         throw new FileNotFoundException(sprintf('File "%s" not found in "%s".', $file, $location));
     }
 

@@ -87,9 +87,11 @@ final class AliasCaseConverter implements CaseConverterInterface
         if (Strings::match($key, self::NAMED_ALIAS_REGEX)) {
             return true;
         }
+
         if (! is_string($values)) {
             return false;
         }
+
         return $values[0] === '@';
     }
 

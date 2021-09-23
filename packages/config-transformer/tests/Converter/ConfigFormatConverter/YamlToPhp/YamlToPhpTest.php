@@ -122,7 +122,7 @@ final class YamlToPhpTest extends AbstractConfigFormatConverterTest
         return StaticFixtureFinder::yieldDirectory(__DIR__ . '/Fixture/maker-bundle', '*.yaml');
     }
 
-    private function doTestOutputWithExtraDirectory(SmartFileInfo $fixtureFileInfo, $extraDirectory): void
+    private function doTestOutputWithExtraDirectory(SmartFileInfo $fixtureFileInfo, string $extraDirectory): void
     {
         $inputAndExpected = StaticFixtureSplitter::splitFileInfoToInputAndExpected($fixtureFileInfo);
 

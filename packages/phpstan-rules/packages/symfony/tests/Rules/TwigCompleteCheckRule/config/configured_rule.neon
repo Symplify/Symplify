@@ -7,7 +7,7 @@ parameters:
 
 services:
     -
-        class: Symplify\PHPStanRules\Symfony\Rules\NoTwigMissingMethodCallRule
+        class: Symplify\PHPStanRules\Symfony\Rules\TwigCompleteCheckRule
         tags: [phpstan.rules.rule]
 
     -

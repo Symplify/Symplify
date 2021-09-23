@@ -46,6 +46,7 @@ final class StaticFixtureSplitter
         if ($autoloadTestFixture) {
             require_once $inputFileInfo->getRealPath();
         }
+
         $expectedFileInfo = self::createTemporaryFileInfo($smartFileInfo, 'expected', $inputAndExpected->getExpected());
 
         return new InputFileInfoAndExpectedFileInfo($inputFileInfo, $expectedFileInfo);
@@ -116,6 +117,7 @@ final class StaticFixtureSplitter
         if (strlen((string) (int) $expected) === strlen(trim($expected))) {
             return (int) $expected;
         }
+
         if (strlen((string) (float) $expected) === strlen(trim($expected))) {
             return (float) $expected;
         }

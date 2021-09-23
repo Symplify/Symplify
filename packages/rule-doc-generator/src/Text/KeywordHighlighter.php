@@ -85,10 +85,12 @@ final class KeywordHighlighter
         if (Strings::match($word, self::ANNOTATION_REGEX)) {
             return true;
         }
+
         // already in code quotes
         if (\str_starts_with($word, '`')) {
             return false;
         }
+
         if (\str_ends_with($word, '`')) {
             return false;
         }

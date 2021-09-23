@@ -110,6 +110,7 @@ final class UselessDocBlockCleaner
         if (! isset($reversedTokens[$index + 4])) {
             return false;
         }
+
         return $reversedTokens[$index + 4]->getContent() === 'function';
     }
 

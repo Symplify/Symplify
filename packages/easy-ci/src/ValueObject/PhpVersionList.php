@@ -8,7 +8,7 @@ final class PhpVersionList
 {
     /**
      * @see https://en.wikipedia.org/wiki/PHP#Release_history
-     * @var string[]
+     * @var array<string, string>
      */
     public const VERSIONS_BY_RELEASE_DATE = [
         '2009-06-30' => '5.3',

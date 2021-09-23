@@ -90,6 +90,7 @@ final class RuleDefinitionsPrinter
             $codeSampleLines = $this->codeSamplePrinter->print($ruleDefinition);
             $lines = array_merge($lines, $codeSampleLines);
         }
+
         return $lines;
     }
 

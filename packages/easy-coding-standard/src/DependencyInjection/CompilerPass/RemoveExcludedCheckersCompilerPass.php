@@ -62,16 +62,20 @@ final class RemoveExcludedCheckersCompilerPass implements CompilerPassInterface
         if (is_string($key) && class_exists($key) && $value === null) {
             return $key;
         }
+
         // "SomeClass::class"
         if (! is_int($key)) {
             return null;
         }
+
         if (! is_string($value)) {
             return null;
         }
+
         if (! class_exists($value)) {
             return null;
         }
+
         return $value;
     }
 }

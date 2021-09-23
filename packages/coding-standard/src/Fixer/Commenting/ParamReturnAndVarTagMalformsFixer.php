@@ -66,6 +66,7 @@ final class ParamReturnAndVarTagMalformsFixer extends AbstractSymplifyFixer impl
         if (! $tokens->isAnyTokenKindsFound([T_DOC_COMMENT, T_COMMENT])) {
             return false;
         }
+
         return $tokens->isAnyTokenKindsFound([T_FUNCTION, T_VARIABLE]);
     }
 

@@ -17,6 +17,7 @@ final class StringsFilter
         if ($matchingValues === []) {
             return true;
         }
+
         foreach ($matchingValues as $matchingValue) {
             if ($matchingValue === $currentValue) {
                 return true;

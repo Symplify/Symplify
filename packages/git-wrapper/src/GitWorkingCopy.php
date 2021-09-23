@@ -655,7 +655,7 @@ final class GitWorkingCopy
     /**
      * @code $git->clean('-d', '-f');
      *
-     * @param mixed ...$argsAndOptions
+     * @param string ...$argsAndOptions
      */
     public function clean(...$argsAndOptions): string
     {

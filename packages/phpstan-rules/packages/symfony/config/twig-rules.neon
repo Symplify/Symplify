@@ -1,7 +1,7 @@
 services:
     # generic rule check for all twigs
     -
-        class: Symplify\PHPStanRules\Symfony\Rules\NoTwigMissingMethodCallRule
+        class: Symplify\PHPStanRules\Symfony\Rules\TwigCompleteCheckRule
         tags: [phpstan.rules.rule]
 
     -

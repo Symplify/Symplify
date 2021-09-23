@@ -49,6 +49,7 @@ final class Psr4NamespaceToPathFactory
             // skip
             return null;
         }
+
         if ($relativeDirectory === '') {
             // skip
             return null;

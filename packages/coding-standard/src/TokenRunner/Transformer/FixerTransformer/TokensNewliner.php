@@ -111,6 +111,7 @@ final class TokensNewliner
         if (! $nextToken->isWhitespace(' ')) {
             return false;
         }
+
         return $nextNextToken->isComment();
     }
 }

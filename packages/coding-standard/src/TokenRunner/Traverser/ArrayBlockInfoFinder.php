@@ -44,7 +44,7 @@ final class ArrayBlockInfoFinder
 
     /**
      * @param Tokens<Token> $tokens
-     * @return Token[]
+     * @return Token[]|null[]
      */
     private function reverseTokens(Tokens $tokens): array
     {

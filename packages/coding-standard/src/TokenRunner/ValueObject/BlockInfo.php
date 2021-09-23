@@ -27,6 +27,7 @@ final class BlockInfo
         if ($position < $this->start) {
             return false;
         }
+
         return $position <= $this->end;
     }
 }

@@ -41,6 +41,7 @@ final class ArrayTypeCaster implements TypeCasterInterface
                     $currentMapFunction = $mapMultilevelArray($arrayLevel);
                     return array_map($currentMapFunction, $value);
                 }
+
                 if ($type === 'string') {
                     return (string) $value;
                 }

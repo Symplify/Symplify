@@ -44,9 +44,6 @@ final class StaticFixtureFinderTest extends TestCase
     {
         $this->expectException(ShouldNotHappenException::class);
 
-        $files = StaticFixtureFinder::yieldDirectoryExclusively(__DIR__ . '/FixtureMulti', '*.php');
-
-        // this is needed to call the iterator
-        $fileInfos = iterator_to_array($files);
+        StaticFixtureFinder::yieldDirectoryExclusively(__DIR__ . '/FixtureMulti', '*.php');
     }
 }

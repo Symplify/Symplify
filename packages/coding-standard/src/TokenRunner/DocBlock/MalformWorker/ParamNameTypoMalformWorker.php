@@ -50,6 +50,7 @@ final class ParamNameTypoMalformWorker implements MalformWorkerInterface
         if ($argumentNames === []) {
             return $docContent;
         }
+
         if ($paramNames === []) {
             return $docContent;
         }

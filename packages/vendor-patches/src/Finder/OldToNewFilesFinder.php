@@ -32,6 +32,7 @@ final class OldToNewFilesFinder
             if (strlen($oldRealPath) - $oldStrrPos !== 4) {
                 continue;
             }
+
             $newFilePath = substr($oldRealPath, 0, $oldStrrPos);
             if (! file_exists($newFilePath)) {
                 continue;

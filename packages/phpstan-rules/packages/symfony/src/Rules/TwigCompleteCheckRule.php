@@ -22,10 +22,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
- * @todo generic rule potential
- * @see \Symplify\PHPStanRules\Symfony\Tests\Rules\NoTwigMissingMethodCallRule\NoTwigMissingMethodCallRuleTest
+ * @see \Symplify\PHPStanRules\Symfony\Tests\Rules\TwigCompleteCheckRule\TwigCompleteCheckRuleTest
  */
-final class NoTwigMissingMethodCallRule extends AbstractSymplifyRule
+final class TwigCompleteCheckRule extends AbstractSymplifyRule
 {
     /**
      * @var string

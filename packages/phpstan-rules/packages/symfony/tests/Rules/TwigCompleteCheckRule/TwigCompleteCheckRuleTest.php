@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Symplify\PHPStanRules\Symfony\Tests\Rules\NoTwigMissingMethodCallRule;
+namespace Symplify\PHPStanRules\Symfony\Tests\Rules\TwigCompleteCheckRule;
 
 use Iterator;
 use PHPStan\Rules\Rule;
 use Symplify\PHPStanExtensions\Testing\AbstractServiceAwareRuleTestCase;
-use Symplify\PHPStanRules\Symfony\Rules\NoTwigMissingMethodCallRule;
-use Symplify\PHPStanRules\Symfony\Tests\Rules\NoTwigMissingMethodCallRule\Source\SomeType;
+use Symplify\PHPStanRules\Symfony\Rules\TwigCompleteCheckRule;
+use Symplify\PHPStanRules\Symfony\Tests\Rules\TwigCompleteCheckRule\Source\SomeType;
 
 /**
- * @extends AbstractServiceAwareRuleTestCase<NoTwigMissingMethodCallRule>
+ * @extends AbstractServiceAwareRuleTestCase<TwigCompleteCheckRule>
  */
-final class NoTwigMissingMethodCallRuleTest extends AbstractServiceAwareRuleTestCase
+final class TwigCompleteCheckRuleTest extends AbstractServiceAwareRuleTestCase
 {
     /**
      * @dataProvider provideData()
@@ -44,9 +44,6 @@ final class NoTwigMissingMethodCallRuleTest extends AbstractServiceAwareRuleTest
 
     protected function getRule(): Rule
     {
-        return $this->getRuleFromConfig(
-            NoTwigMissingMethodCallRule::class,
-            __DIR__ . '/config/configured_rule.neon'
-        );
+        return $this->getRuleFromConfig(TwigCompleteCheckRule::class, __DIR__ . '/config/configured_rule.neon');
     }
 }

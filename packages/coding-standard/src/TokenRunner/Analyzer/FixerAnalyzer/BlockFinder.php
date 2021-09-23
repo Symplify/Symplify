@@ -106,6 +106,7 @@ final class BlockFinder
             if (in_array($token->getContent(), ['[', ']'], true)) {
                 return Tokens::BLOCK_TYPE_ARRAY_SQUARE_BRACE;
             }
+
             return Tokens::BLOCK_TYPE_ARRAY_INDEX_CURLY_BRACE;
         }
 

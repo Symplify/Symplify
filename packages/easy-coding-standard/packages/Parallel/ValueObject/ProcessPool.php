@@ -27,6 +27,7 @@ final class ProcessPool
         if (! \array_key_exists($identifier, $this->processes)) {
             throw new ParallelShouldNotHappenException(\sprintf('Process %s not found.', $identifier));
         }
+
         return $this->processes[$identifier];
     }
 
@@ -40,6 +41,7 @@ final class ProcessPool
         if (! \array_key_exists($identifier, $this->processes)) {
             return;
         }
+
         $this->quitProcess($identifier);
     }
 
@@ -52,6 +54,7 @@ final class ProcessPool
         if ($this->processes !== []) {
             return;
         }
+
         $this->tcpServer->close();
     }
 

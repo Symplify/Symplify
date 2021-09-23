@@ -75,6 +75,7 @@ final class EasyCodingStandardConsoleApplication extends Application
         if ($hasNoArguments) {
             return false;
         }
+
         $outputFormat = $input->getParameterOption('--' . Option::OUTPUT_FORMAT);
 
         return $outputFormat === ConsoleOutputFormatter::NAME;

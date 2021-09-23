@@ -189,6 +189,7 @@ final class ComposerJson
         if ($requiredPhpVersion === null) {
             return [];
         }
+
         return [
             self::PHP => $requiredPhpVersion,
         ];
@@ -568,6 +569,7 @@ final class ComposerJson
         if ($this->hasRequiredPackage($packageName)) {
             $this->require[$packageName] = $version;
         }
+
         if ($this->hasRequiredDevPackage($packageName)) {
             $this->requireDev[$packageName] = $version;
         }
