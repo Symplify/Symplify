@@ -20,10 +20,8 @@ use PhpParser\Node\Scalar\MagicConst\Dir;
 use PhpParser\Node\Scalar\MagicConst\File;
 use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Analyser\Scope;
-use PHPStan\Type\Constant\ConstantBooleanType;
-use PHPStan\Type\Constant\ConstantFloatType;
-use PHPStan\Type\Constant\ConstantIntegerType;
-use PHPStan\Type\Constant\ConstantStringType;
+use PHPStan\Type\ConstantScalarType;
+use PHPStan\Type\UnionType;
 use ReflectionClassConstant;
 use Symplify\Astral\Exception\ShouldNotHappenException;
 use Symplify\Astral\Naming\SimpleNameResolver;
@@ -39,12 +37,15 @@ final class NodeValueResolver
 
     private ?string $currentFilePath = null;
 
+    private UnionTypeValueResolver $unionTypeValueResolver;
+
     public function __construct(
         private SimpleNameResolver $simpleNameResolver,
         private TypeChecker $typeChecker,
         private SimpleNodeFinder $simpleNodeFinder
     ) {
         $this->constExprEvaluator = new ConstExprEvaluator(fn (Expr $expr) => $this->resolveByNode($expr));
+        $this->unionTypeValueResolver = new UnionTypeValueResolver();
     }
 
     /**
@@ -60,20 +61,12 @@ final class NodeValueResolver
         }
 
         $exprType = $scope->getType($expr);
-        if ($exprType instanceof ConstantStringType) {
+        if ($exprType instanceof ConstantScalarType) {
             return $exprType->getValue();
         }
 
-        if ($exprType instanceof ConstantIntegerType) {
-            return $exprType->getValue();
-        }
-
-        if ($exprType instanceof ConstantBooleanType) {
-            return $exprType->getValue();
-        }
-
-        if ($exprType instanceof ConstantFloatType) {
-            return $exprType->getValue();
+        if ($exprType instanceof UnionType) {
+            return $this->unionTypeValueResolver->resolveConstantTypes($exprType);
         }
 
         return null;

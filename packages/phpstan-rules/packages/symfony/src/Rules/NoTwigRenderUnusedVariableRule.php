@@ -51,7 +51,7 @@ final class NoTwigRenderUnusedVariableRule extends AbstractSymplifyRule
 
         $unusedVariableNames = $this->unusedTwigTemplateVariableAnalyzer->resolveMethodCallAndTemplate(
             $node,
-            $renderTemplateWithParameters->getTemplateFilePath(),
+            $renderTemplateWithParameters->getTemplateFilePaths(),
             $scope
         );
 

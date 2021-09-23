@@ -106,8 +106,9 @@ final class LatteCompleteCheckRule extends AbstractSymplifyRule
 
         $firstArgValue = $node->args[0]->value;
 
-        $resolvedTemplateFilePath = $this->pathResolver->resolveExistingFilePath($firstArgValue, $scope);
-        if ($resolvedTemplateFilePath === null) {
+        // @todo use similar approach to Twig rule
+        $resolvedTemplateFilePaths = $this->pathResolver->resolveExistingFilePaths($firstArgValue, $scope);
+        if ($resolvedTemplateFilePaths === []) {
             return [];
         }
 
@@ -116,33 +117,13 @@ final class LatteCompleteCheckRule extends AbstractSymplifyRule
             return [];
         }
 
-        try {
-            $phpFileContentsWithLineMap = $this->templateFileVarTypeDocBlocksDecorator->decorate(
-                $resolvedTemplateFilePath,
-                $secondArgValue,
-                $scope
-            );
-        } catch (Throwable) {
-            // missing include/layout template or something else went wrong → we cannot analyse template here
-            return [];
+        $errors = [];
+        foreach ($resolvedTemplateFilePaths as $resolvedTemplateFilePath) {
+            $currentErrors = $this->processTemplateFilePath($resolvedTemplateFilePath, $secondArgValue, $scope);
+            $errors = array_merge($errors, $currentErrors);
         }
 
-        $tmpFilePath = sys_get_temp_dir() . '/' . md5($scope->getFile()) . '-latte-compiled.php';
-        $phpFileContents = $phpFileContentsWithLineMap->getPhpFileContents();
-
-        $this->smartFileSystem->dumpFile($tmpFilePath, $phpFileContents);
-
-        // to include generated class
-        $fileAnalyserResult = $this->fileAnalyser->analyseFile($tmpFilePath, [], $this->registry, null);
-
-        // remove errors related to just created class, that cannot be autoloaded
-        $errors = $this->errorSkipper->skipErrors($fileAnalyserResult->getErrors(), self::ERROR_IGNORES);
-
-        return $this->templateErrorsFactory->createErrors(
-            $errors,
-            $resolvedTemplateFilePath,
-            $phpFileContentsWithLineMap
-        );
+        return $errors;
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -205,5 +186,35 @@ CODE_SAMPLE
             $activeRules[] = $rule;
         }
         return $activeRules;
+    }
+
+    /**
+     * @return RuleError[]
+     */
+    private function processTemplateFilePath(string $templateFilePath, Array_ $array, Scope $scope): array
+    {
+        try {
+            $phpFileContentsWithLineMap = $this->templateFileVarTypeDocBlocksDecorator->decorate(
+                $templateFilePath,
+                $array,
+                $scope
+            );
+        } catch (Throwable) {
+            // missing include/layout template or something else went wrong → we cannot analyse template here
+            return [];
+        }
+
+        $tmpFilePath = sys_get_temp_dir() . '/' . md5($scope->getFile()) . '-latte-compiled.php';
+        $phpFileContents = $phpFileContentsWithLineMap->getPhpFileContents();
+
+        $this->smartFileSystem->dumpFile($tmpFilePath, $phpFileContents);
+
+        // to include generated class
+        $fileAnalyserResult = $this->fileAnalyser->analyseFile($tmpFilePath, [], $this->registry, null);
+
+        // remove errors related to just created class, that cannot be autoloaded
+        $errors = $this->errorSkipper->skipErrors($fileAnalyserResult->getErrors(), self::ERROR_IGNORES);
+
+        return $this->templateErrorsFactory->createErrors($errors, $templateFilePath, $phpFileContentsWithLineMap);
     }
 }

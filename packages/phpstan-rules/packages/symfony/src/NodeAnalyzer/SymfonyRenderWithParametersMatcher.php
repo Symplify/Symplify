@@ -98,14 +98,14 @@ final class SymfonyRenderWithParametersMatcher
     ): ?RenderTemplateWithParameters {
         $firstArgValue = $methodCall->args[0]->value;
 
-        $resolvedTemplateFilePath = $this->pathResolver->resolveExistingFilePath($firstArgValue, $scope);
-        if ($resolvedTemplateFilePath === null) {
+        $resolvedTemplateFilePaths = $this->pathResolver->resolveExistingFilePaths($firstArgValue, $scope);
+        if ($resolvedTemplateFilePaths === []) {
             return null;
         }
 
         // we need array parameters
         $parametersArray = $this->resolveParameterArray($methodCall);
 
-        return new RenderTemplateWithParameters($resolvedTemplateFilePath, $parametersArray);
+        return new RenderTemplateWithParameters($resolvedTemplateFilePaths, $parametersArray);
     }
 }

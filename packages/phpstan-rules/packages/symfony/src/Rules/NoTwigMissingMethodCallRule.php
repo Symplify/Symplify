@@ -86,22 +86,13 @@ final class NoTwigMissingMethodCallRule extends AbstractSymplifyRule
         );
 
         // 3. compile twig to PHP with resolved types in @var docs
-        $phpFileContent = $this->twigToPhpCompiler->compileContent(
-            $renderTemplateWithParameters->getTemplateFilePath(),
-            $variablesAndTypes,
-        );
+        $errors = [];
+        foreach ($renderTemplateWithParameters->getTemplateFilePaths() as $templateFilePath) {
+            $currentErrors = $this->processTemplateFilePath($templateFilePath, $variablesAndTypes, $scope);
+            $errors = array_merge($errors, $currentErrors);
+        }
 
-        // 4. print the content to temporary file
-        $tmpFilePath = sys_get_temp_dir() . '/' . md5($scope->getFile()) . '-twig-compiled.php';
-        $this->smartFileSystem->dumpFile($tmpFilePath, $phpFileContent);
-
-        // 5. analyse temporary PHP file with full PHPStan rules
-        $fileAnalyserResult = $this->fileAnalyser->analyseFile($tmpFilePath, [], $this->registry, null);
-
-        // @todo correct PHP to twig line
-        // probably via data in getDebugInfo() method
-
-        return $this->errorSkipper->skipErrors($fileAnalyserResult->getErrors(), self::ERROR_IGNORES);
+        return $errors;
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -143,5 +134,24 @@ final class SomeController extends AbstractController
 CODE_SAMPLE
             ),
         ]);
+    }
+
+    /**
+     * @return Error[]
+     */
+    private function processTemplateFilePath(string $templateFilePath, array $variablesAndTypes, Scope $scope): array
+    {
+        $phpFileContent = $this->twigToPhpCompiler->compileContent($templateFilePath, $variablesAndTypes,);
+
+        // 4. print the content to temporary file
+        $tmpFilePath = sys_get_temp_dir() . '/' . md5($scope->getFile()) . '-twig-compiled.php';
+        $this->smartFileSystem->dumpFile($tmpFilePath, $phpFileContent);
+
+        // 5. analyse temporary PHP file with full PHPStan rules
+        $fileAnalyserResult = $this->fileAnalyser->analyseFile($tmpFilePath, [], $this->registry, null);
+
+        // @todo correct PHP to twig line
+        // probably via data in getDebugInfo() method
+        return $this->errorSkipper->skipErrors($fileAnalyserResult->getErrors(), self::ERROR_IGNORES);
     }
 }

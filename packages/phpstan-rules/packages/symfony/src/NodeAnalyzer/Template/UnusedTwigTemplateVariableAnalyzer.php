@@ -21,10 +21,10 @@ final class UnusedTwigTemplateVariableAnalyzer
      */
     public function resolveMethodCallAndTemplate(
         MethodCall $methodCall,
-        string $templateFilePath,
+        array $templateFilePaths,
         Scope $scope
     ): array {
-        $templateUsedVariableNames = $this->twigVariableNamesResolver->resolveFromFile($templateFilePath);
+        $templateUsedVariableNames = $this->twigVariableNamesResolver->resolveFromFiles($templateFilePaths);
         $passedVariableNames = $this->methodCallArrayResolver->resolveArrayKeysOnPosition($methodCall, $scope, 1);
 
         return array_diff($passedVariableNames, $templateUsedVariableNames);

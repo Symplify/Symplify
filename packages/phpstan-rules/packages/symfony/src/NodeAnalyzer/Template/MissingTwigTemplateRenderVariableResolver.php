@@ -23,8 +23,8 @@ final class MissingTwigTemplateRenderVariableResolver
         RenderTemplateWithParameters $renderTemplateWithParameters,
         Scope $scope
     ): array {
-        $templateUsedVariableNames = $this->twigVariableNamesResolver->resolveFromFile(
-            $renderTemplateWithParameters->getTemplateFilePath()
+        $templateUsedVariableNames = $this->twigVariableNamesResolver->resolveFromFiles(
+            $renderTemplateWithParameters->getTemplateFilePaths()
         );
 
         $availableVariableNames = $this->arrayAnalyzer->resolveStringKeys(

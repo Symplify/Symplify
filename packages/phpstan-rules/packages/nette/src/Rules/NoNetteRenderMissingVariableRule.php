@@ -55,16 +55,21 @@ final class NoNetteRenderMissingVariableRule extends AbstractSymplifyRule
 
         $firstArgValue = $node->args[0]->value;
 
-        $resolvedTemplateFilePath = $this->pathResolver->resolveExistingFilePath($firstArgValue, $scope);
-        if ($resolvedTemplateFilePath === null) {
+        $templateFilePaths = $this->pathResolver->resolveExistingFilePaths($firstArgValue, $scope);
+        if ($templateFilePaths === []) {
             return [];
         }
 
-        $missingVariableNames = $this->missingLatteTemplateRenderVariableResolver->resolveFromTemplateAndMethodCall(
-            $node,
-            $resolvedTemplateFilePath,
-            $scope
-        );
+        $missingVariableNames = [];
+        foreach ($templateFilePaths as $templateFilePath) {
+            $currentMissingVariableNames = $this->missingLatteTemplateRenderVariableResolver->resolveFromTemplateAndMethodCall(
+                $node,
+                $templateFilePath,
+                $scope
+            );
+
+            $missingVariableNames = array_merge($missingVariableNames, $currentMissingVariableNames);
+        }
 
         if ($missingVariableNames === []) {
             return [];

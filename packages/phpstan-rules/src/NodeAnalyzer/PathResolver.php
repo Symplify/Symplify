@@ -16,30 +16,47 @@ final class PathResolver
     ) {
     }
 
-    public function resolveExistingFilePath(Expr $expr, Scope $scope): ?string
+    /**
+     * @return string[]
+     */
+    public function resolveExistingFilePaths(Expr $expr, Scope $scope): array
     {
-        $resolvedTemplateFilePath = $this->nodeValueResolver->resolveWithScope($expr, $scope);
+        $resolvedValue = $this->nodeValueResolver->resolveWithScope($expr, $scope);
 
-        // file could not be found, nothing we can do
-        if (! is_string($resolvedTemplateFilePath)) {
-            return null;
+        $possibleTemplateFilePaths = $this->arrayizeStrings($resolvedValue);
+        if ($possibleTemplateFilePaths === []) {
+            return [];
         }
 
-        if (file_exists($resolvedTemplateFilePath)) {
-            return $resolvedTemplateFilePath;
+        $resolvedTemplateFilePaths = [];
+
+        foreach ($possibleTemplateFilePaths as $possibleTemplateFilePath) {
+            // file could not be found, nothing we can do
+            if (! is_string($possibleTemplateFilePath)) {
+                continue;
+            }
+
+            // 1. file exists
+            if (file_exists($possibleTemplateFilePath)) {
+                $resolvedTemplateFilePaths[] = $possibleTemplateFilePath;
+                continue;
+            }
+
+            // 2. look for possible template candidate in /templates directory
+            $filePath = $this->findCandidateInTemplatesDirectory($possibleTemplateFilePath);
+            if ($filePath === null) {
+                continue;
+            }
+
+            $fileRealPath = realpath($filePath);
+            if ($fileRealPath === false) {
+                continue;
+            }
+
+            $resolvedTemplateFilePaths[] = $fileRealPath;
         }
 
-        $filePath = $this->findCandidateInTemplatesDirectory($resolvedTemplateFilePath);
-        if ($filePath === null) {
-            return null;
-        }
-
-        $fileRealPath = realpath($filePath);
-        if ($fileRealPath === false) {
-            return null;
-        }
-
-        return $fileRealPath;
+        return $resolvedTemplateFilePaths;
     }
 
     /**
@@ -64,5 +81,22 @@ final class PathResolver
         }
 
         return null;
+    }
+
+    /**
+     * @return string[]|mixed[]
+     */
+    private function arrayizeStrings(mixed $resolvedValue): array
+    {
+        if (is_string($resolvedValue)) {
+            return [$resolvedValue];
+        }
+
+        if (is_array($resolvedValue)) {
+            return $resolvedValue;
+        }
+
+        // impossible to resolve
+        return [];
     }
 }
