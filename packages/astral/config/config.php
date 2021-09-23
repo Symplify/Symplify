@@ -20,6 +20,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             __DIR__ . '/../src/HttpKernel',
             __DIR__ . '/../src/StaticFactory',
             __DIR__ . '/../src/ValueObject',
+            __DIR__ . '/../src/NodeVisitor',
         ]);
 
     $services->set(ConstExprEvaluator::class);
