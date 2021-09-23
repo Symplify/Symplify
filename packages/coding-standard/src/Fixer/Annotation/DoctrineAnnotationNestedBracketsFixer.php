@@ -122,7 +122,7 @@ CODE_SAMPLE
     /**
      * @param DoctrineAnnotationTokens<DoctrineAnnotationToken> $doctrineAnnotationTokens
      */
-    private function fixAnnotations(DoctrineAnnotationTokens $doctrineAnnotationTokens, $useDeclarations): void
+    private function fixAnnotations(DoctrineAnnotationTokens $doctrineAnnotationTokens, array $useDeclarations): void
     {
         foreach ($doctrineAnnotationTokens as $index => $token) {
             $isAtToken = $doctrineAnnotationTokens[$index]->isType(DocLexer::T_AT);

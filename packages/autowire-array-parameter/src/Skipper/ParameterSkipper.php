@@ -78,6 +78,7 @@ final class ParameterSkipper
         if ($definition->getClass() === null) {
             return false;
         }
+
         return is_a($definition->getClass(), $parameterType, true);
     }
 

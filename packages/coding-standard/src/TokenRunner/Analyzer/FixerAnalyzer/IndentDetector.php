@@ -31,6 +31,7 @@ final class IndentDetector
             if ($token->isWhitespace() && ! $this->containsOnlySpaces($token->getContent())) {
                 return substr_count($token->getContent(), $indent, (int) $lastNewlinePos);
             }
+
             if ($lastNewlinePos !== false) {
                 return substr_count($token->getContent(), $indent, $lastNewlinePos);
             }

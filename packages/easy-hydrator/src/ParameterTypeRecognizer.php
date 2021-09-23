@@ -76,6 +76,7 @@ final class ParameterTypeRecognizer
         if (! $declaringReflectionClass instanceof ReflectionClass) {
             return null;
         }
+
         if (! $docNode instanceof SimplePhpDocNode) {
             return null;
         }
@@ -117,6 +118,7 @@ final class ParameterTypeRecognizer
             ++$level;
             $currentTypeNode = $currentTypeNode->type;
         }
+
         return $level;
     }
 
@@ -128,19 +130,23 @@ final class ParameterTypeRecognizer
         if (! $declaringReflectionClass instanceof ReflectionClass) {
             return null;
         }
+
         $currentTypeNode = $arrayTypeNode;
         do {
             $identifierTypeNode = $currentTypeNode->type;
             if ($identifierTypeNode instanceof IdentifierTypeNode) {
                 return Reflection::expandClassName($identifierTypeNode->name, $declaringReflectionClass);
             }
+
             if ($identifierTypeNode instanceof GenericTypeNode) {
                 $genericTypeNodes = $identifierTypeNode->genericTypes;
                 $genericTypeNode = $genericTypeNodes[count($genericTypeNodes) - 1];
                 return Reflection::expandClassName((string) $genericTypeNode, $declaringReflectionClass);
             }
+
             $currentTypeNode = $identifierTypeNode;
         } while ($currentTypeNode instanceof ArrayTypeNode);
+
         return null;
     }
 

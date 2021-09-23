@@ -74,6 +74,7 @@ final class PackageComposerFinder
 
             $this->cachedPackageComposerFiles = $this->finderSanitizer->sanitize($finder);
         }
+
         return $this->cachedPackageComposerFiles;
     }
 

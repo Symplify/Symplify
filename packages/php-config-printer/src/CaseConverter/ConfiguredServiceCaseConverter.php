@@ -72,9 +72,11 @@ final class ConfiguredServiceCaseConverter implements CaseConverterInterface
         if (isset($values[YamlKey::ALIAS])) {
             return true;
         }
+
         if (! is_string($values)) {
             return false;
         }
+
         return \str_starts_with($values, '@');
     }
 }

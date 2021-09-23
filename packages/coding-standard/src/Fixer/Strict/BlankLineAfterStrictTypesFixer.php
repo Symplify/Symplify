@@ -71,6 +71,7 @@ final class BlankLineAfterStrictTypesFixer extends AbstractSymplifyFixer impleme
         if ($sequenceLocation === null) {
             return;
         }
+
         $semicolonPosition = (int) array_key_last($sequenceLocation);
 
         // empty file

@@ -67,6 +67,7 @@ final class ColorConsoleDiffFormatter
             if ($escapedDiffLine === '--- Original') {
                 unset($escapedDiffLines[$key]);
             }
+
             if ($escapedDiffLine === '+++ New') {
                 unset($escapedDiffLines[$key]);
             }

@@ -167,6 +167,7 @@ final class ParallelFileProcessor
                             $systemErrors[] = sprintf('System error: %s', $jsonError);
                             continue;
                         }
+
                         $errors[] = CodingStandardError::decode($jsonError);
                     }
 

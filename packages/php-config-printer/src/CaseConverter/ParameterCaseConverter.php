@@ -46,6 +46,7 @@ final class ParameterCaseConverter implements CaseConverterInterface
                 if (! is_string($subValue)) {
                     continue;
                 }
+
                 $values[$subKey] = $this->prefixWithDirConstantIfExistingPath($subValue);
             }
         }
@@ -64,12 +65,14 @@ final class ParameterCaseConverter implements CaseConverterInterface
         if ($filePath === null) {
             return $value;
         }
+
         $configDirectory = dirname($filePath);
 
         $possibleConfigPath = $configDirectory . '/' . $value;
         if (is_file($possibleConfigPath)) {
             return $this->commonNodeFactory->createAbsoluteDirExpr($value);
         }
+
         if (is_dir($possibleConfigPath)) {
             return $this->commonNodeFactory->createAbsoluteDirExpr($value);
         }

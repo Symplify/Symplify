@@ -14,6 +14,7 @@ final class FilterOutDuplicatedRequireAndRequireDevJsonDecorator implements Comp
         if ($composerJson->getRequire() === []) {
             return;
         }
+
         if ($composerJson->getRequireDev() === []) {
             return;
         }

@@ -80,6 +80,7 @@ final class ParametersMerger
                 if (isset($right[$key])) {
                     $val = $mergeCallback($val, $right[$key]);
                 }
+
                 $right[$key] = $val;
             }
         }

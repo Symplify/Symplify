@@ -59,6 +59,7 @@ final class ParallelProcess
         if ($tmp === false) {
             throw new ParallelShouldNotHappenException('Failed creating temp file.');
         }
+
         $this->stdErr = $tmp;
         $this->process = new Process($this->command, null, null, [
             2 => $this->stdErr,

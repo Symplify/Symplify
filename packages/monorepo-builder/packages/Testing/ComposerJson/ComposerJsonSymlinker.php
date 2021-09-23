@@ -106,9 +106,11 @@ final class ComposerJsonSymlinker
                 } else {
                     unset($packageComposerJson[ComposerJsonSection::REPOSITORIES][$key][self::OPTIONS]);
                 }
+
                 return $packageComposerJson;
             }
         }
+
         // Add the new entry
         array_unshift($packageComposerJson[ComposerJsonSection::REPOSITORIES], $repositoriesContent);
         return $packageComposerJson;
@@ -123,12 +125,15 @@ final class ComposerJsonSymlinker
         if (! isset($repository[self::TYPE])) {
             return false;
         }
+
         if ($repository[self::TYPE] !== $repositoriesContent[self::TYPE]) {
             return false;
         }
+
         if (! isset($repository[self::URL])) {
             return false;
         }
+
         return $repository[self::URL] === $repositoriesContent[self::URL];
     }
 }

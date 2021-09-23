@@ -43,6 +43,7 @@ final class FilePathResolver
         if (! is_array($arguments)) {
             $arguments = [$arguments];
         }
+
         $i = 0;
         return Strings::replace($filePath, self::FILE_PATH_REGEX, function () use (&$i, $arguments) {
             $value = $arguments[$i];

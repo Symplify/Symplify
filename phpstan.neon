@@ -575,3 +575,9 @@ parameters:
             path: packages/phpstan-rules/packages/latte-phpstan-printer/src/PhpParser/NodeFactory/VarDocNodeFactory.php
 
         - '#Parameter \#3 \.\.\.\$arrays of function array_merge expects array, array<PhpParser\\Node\\Stmt\>\|null given#'
+
+        # variadics false positive
+        - '#Parameter (.*?) \.\.\.(.*?) of method Symplify\\GitWrapper\\GitWorkingCopy\:\:(.*?)\(\) expects array, string given#'
+        -
+            message: '#PHPDoc tag @param for parameter (.*?) with type mixed is not subtype of native type array#'
+            path: packages/git-wrapper/src/GitWorkingCopy.php

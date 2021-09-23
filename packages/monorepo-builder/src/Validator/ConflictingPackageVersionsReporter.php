@@ -41,6 +41,7 @@ final class ConflictingPackageVersionsReporter
             $fileInfo = new SmartFileInfo($file);
             $tableRows[] = [$fileInfo->getRelativeFilePathFromCwd(), $version];
         }
+
         return $tableRows;
     }
 }

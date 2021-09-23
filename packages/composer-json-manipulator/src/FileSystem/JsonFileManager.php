@@ -38,6 +38,7 @@ final class JsonFileManager
         if (! isset($this->cachedJSONFiles[$realPath])) {
             $this->cachedJSONFiles[$realPath] = Json::decode($smartFileInfo->getContents(), Json::FORCE_ARRAY);
         }
+
         return $this->cachedJSONFiles[$realPath];
     }
 

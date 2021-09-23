@@ -37,6 +37,7 @@ final class FileCacheStorage
         if (! $cacheItem instanceof CacheItem) {
             return null;
         }
+
         if (! $cacheItem->isVariableKeyValid($variableKey)) {
             return null;
         }

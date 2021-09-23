@@ -87,6 +87,7 @@ final class SrcTestsDirectoriesFinder
                 if ($srcCounter > 1) {
                     return false;
                 }
+
                 $testsCounter = count(Strings::matchAll($fileInfo->getPathname(), self::TESTS_ONLY_REGEX));
                 return $testsCounter <= 1;
             });

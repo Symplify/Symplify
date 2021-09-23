@@ -68,6 +68,7 @@ final class WorkerCommandLineFactory
                 if ($optionValue) {
                     $processCommandArray[] = sprintf('--%s', $checkCommandOptionName);
                 }
+
                 continue;
             }
 
