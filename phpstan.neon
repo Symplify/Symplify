@@ -530,10 +530,10 @@ parameters:
         - '#Method Symplify\\PHPStanRules\\Nette\\Rules\\LatteCompleteCheckRule\:\:__construct\(\) has parameter \$rules with generic interface PHPStan\\Rules\\Rule but does not specify its types\: TNodeType#'
         - '#Method Symplify\\PHPStanRules\\Nette\\Rules\\LatteCompleteCheckRule\:\:filterActiveRules\(\) return type with generic interface PHPStan\\Rules\\Rule does not specify its types\: TNodeType#'
         - '#Method Symplify\\PHPStanRules\\Nette\\Rules\\LatteCompleteCheckRule\:\:filterActiveRules\(\) has parameter \$rules with generic interface PHPStan\\Rules\\Rule but does not specify its types\: TNodeType#'
-        - '#Method Symplify\\PHPStanRules\\Symfony\\Rules\\NoTwigMissingMethodCallRule\:\:__construct\(\) has parameter \$rules with generic interface PHPStan\\Rules\\Rule but does not specify its types\: TNodeType#'
+        - '#Method Symplify\\PHPStanRules\\Symfony\\Rules\\TwigCompleteCheckRule\:\:__construct\(\) has parameter \$rules with generic interface PHPStan\\Rules\\Rule but does not specify its types\: TNodeType#'
         - '#Property PhpParser\\Node\\Stmt\\ClassMethod\:\:\$stmts \(array<PhpParser\\Node\\Stmt\>\|null\) does not accept array<mixed, mixed\>#'
         - '#Property Symplify\\PHPStanRules\\TwigPHPStanPrinter\\PhpParser\\NodeVisitor\\AppendExtractedVarTypesNodeVisitor\:\:\$variablesAndTypes type has no value type specified in iterable type array#'
-        - '#Method Symplify\\PHPStanRules\\Symfony\\Rules\\NoTwigMissingMethodCallRule\:\:__construct\(\) has parameter \$rules with generic interface PHPStan\\Rules\\Rule but does not specify its types\: TNodeType#'
+        - '#Method Symplify\\PHPStanRules\\Symfony\\Rules\\TwigCompleteCheckRule\:\:__construct\(\) has parameter \$rules with generic interface PHPStan\\Rules\\Rule but does not specify its types\: TNodeType#'
 
         # docs lines
         -

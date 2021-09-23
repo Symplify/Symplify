@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Symplify\PHPStanRules\Symfony\Tests\Rules\NoTwigMissingMethodCallRule\Fixture;
+namespace Symplify\PHPStanRules\Symfony\Tests\Rules\TwigCompleteCheckRule\Fixture;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symplify\PHPStanRules\Symfony\Tests\Rules\NoTwigMissingMethodCallRule\Source\SomeArrayAccesType;
+use Symplify\PHPStanRules\Symfony\Tests\Rules\TwigCompleteCheckRule\Source\SomeArrayAccesType;
 
 final class SkipExistingArrayAccessItems extends AbstractController
 {

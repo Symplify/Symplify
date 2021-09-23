@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Symplify\PHPStanRules\Symfony\Tests\Rules\NoTwigMissingMethodCallRule\Source;
+namespace Symplify\PHPStanRules\Symfony\Tests\Rules\TwigCompleteCheckRule\Source;
 
 final class SomeArrayAccesType implements  \ArrayAccess, \IteratorAggregate, \Countable
 {

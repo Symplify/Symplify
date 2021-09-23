@@ -4456,54 +4456,6 @@ class SomeService
 
 <br>
 
-## NoTwigMissingMethodCallRule
-
-Complete analysis of PHP code generated from Twig template
-
-- class: [`Symplify\PHPStanRules\Symfony\Rules\NoTwigMissingMethodCallRule`](../packages/symfony/src/Rules/NoTwigMissingMethodCallRule.php)
-
-```php
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-final class SomeController extends AbstractController
-{
-    public function __invoke()
-    {
-        return $this->render(__DIR__ . '/some_file.twig', [
-            'some' => new SomeObject()
-        ]);
-    }
-}
-
-// some_file.twig
-{{ some.non_existing_method }}
-```
-
-:x:
-
-<br>
-
-```php
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-final class SomeController extends AbstractController
-{
-    public function __invoke()
-    {
-        return $this->render(__DIR__ . '/some_file.twig', [
-            'some' => new SomeObject()
-        ]);
-    }
-}
-
-// some_file.twig
-{{ some.existing_method }}
-```
-
-:+1:
-
-<br>
-
 ## NoTwigMissingVariableRule
 
 Variable "%s" is used in template but missing in `render()` method
@@ -6319,6 +6271,54 @@ class SomeClass
         return $shortName;
     }
 }
+```
+
+:+1:
+
+<br>
+
+## TwigCompleteCheckRule
+
+Complete analysis of PHP code generated from Twig template
+
+- class: [`Symplify\PHPStanRules\Symfony\Rules\TwigCompleteCheckRule`](../packages/symfony/src/Rules/TwigCompleteCheckRule.php)
+
+```php
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+final class SomeController extends AbstractController
+{
+    public function __invoke()
+    {
+        return $this->render(__DIR__ . '/some_file.twig', [
+            'some' => new SomeObject()
+        ]);
+    }
+}
+
+// some_file.twig
+{{ some.non_existing_method }}
+```
+
+:x:
+
+<br>
+
+```php
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+final class SomeController extends AbstractController
+{
+    public function __invoke()
+    {
+        return $this->render(__DIR__ . '/some_file.twig', [
+            'some' => new SomeObject()
+        ]);
+    }
+}
+
+// some_file.twig
+{{ some.existing_method }}
 ```
 
 :+1:
