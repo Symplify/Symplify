@@ -84,7 +84,7 @@ final class PathResolver
     }
 
     /**
-     * @return string[]
+     * @return string[]|mixed[]
      */
     private function arrayizeStrings(mixed $resolvedValue): array
     {

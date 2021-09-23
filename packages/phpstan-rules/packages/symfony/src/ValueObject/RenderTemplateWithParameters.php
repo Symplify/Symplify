@@ -10,7 +10,6 @@ final class RenderTemplateWithParameters
 {
     /**
      * @param non-empty-array&string[] $templateFilePaths
-     * @param Array_ $parametersArray
      */
     public function __construct(
         private array $templateFilePaths,
@@ -19,7 +18,7 @@ final class RenderTemplateWithParameters
     }
 
     /**
-     * @return non-empty-array&string[]
+     * @return string[]
      */
     public function getTemplateFilePaths(): array
     {

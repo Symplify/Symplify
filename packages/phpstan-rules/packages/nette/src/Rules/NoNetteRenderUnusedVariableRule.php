@@ -76,7 +76,7 @@ final class NoNetteRenderUnusedVariableRule extends AbstractSymplifyRule
 
         $errors = [];
 
-        foreach ($unusedVariableNamesByTemplateFilePath as $templateFilePath => $unusedVariableNames) {
+        foreach ($unusedVariableNamesByTemplateFilePath as $unusedVariableNames) {
             if ($unusedVariableNames === []) {
                 continue;
             }
